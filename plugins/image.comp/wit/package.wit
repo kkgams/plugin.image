@@ -1,0 +1,111 @@
+package gams:image@1.0.0;
+
+interface image {
+    /// Immutable image value. Implementations may store either materialized RGBA8
+    /// pixels or a deferred operation graph. Dynamic JSON bridges represent this
+    /// resource as `{ "$resource": "gams:image/image", "id": "res_..." }`.
+    resource image;
+
+    enum pixel-format {
+        rgba8,
+    }
+
+    enum image-format {
+        png,
+        qoi,
+    }
+
+    enum resize-filter {
+        nearest,
+        triangle,
+        catmullrom,
+    }
+
+    /// Tiled-compatible transform flags:
+    /// - horizontal = bit 1
+    /// - vertical = bit 2
+    /// - diagonal = bit 4
+    /// If diagonal is set, output dimensions are swapped.
+    flags transform-flags {
+        horizontal,
+        vertical,
+        diagonal,
+    }
+
+    record rgba8 {
+        r: u8,
+        g: u8,
+        b: u8,
+        a: u8,
+    }
+
+    record image-info {
+        width: u32,
+        height: u32,
+        pixel-format: pixel-format,
+    }
+
+    /// Edge-coordinate rectangle. Reversed x/y edges mirror the sampled pixels.
+    record rect {
+        x0: s32,
+        y0: s32,
+        x1: s32,
+        y1: s32,
+    }
+
+    record point {
+        x: s32,
+        y: s32,
+    }
+
+    record blit-operation {
+        src: borrow<image>,
+        at: point,
+    }
+
+    open: func(path: string) -> result<image, string>;
+
+    create: func(width: u32, height: u32, fill: option<rgba8>) -> result<image, string>;
+
+    info: func(src: borrow<image>) -> result<image-info, string>;
+
+    clone: func(src: borrow<image>) -> result<image, string>;
+
+    crop: func(src: borrow<image>, rect: rect) -> result<image, string>;
+
+    resize: func(src: borrow<image>, width: u32, height: u32, filter: resize-filter) -> result<image, string>;
+
+    transform: func(src: borrow<image>, flip: transform-flags) -> result<image, string>;
+
+    blit: func(dst: borrow<image>, src: borrow<image>, at: point) -> result<image, string>;
+
+    /// Applies all operations to one cloned destination, in input order.
+    blit-many: func(dst: borrow<image>, operations: list<blit-operation>) -> result<image, string>;
+
+    write-pixel: func(src: borrow<image>, at: point, color: rgba8) -> result<image, string>;
+
+    from-pixels: func(width: u32, height: u32, pixel-format: pixel-format, data: list<u8>) -> result<image, string>;
+
+    read-pixel: func(src: borrow<image>, at: point) -> result<rgba8, string>;
+
+    read-pixels: func(src: borrow<image>) -> result<list<u8>, string>;
+
+    %export: func(src: borrow<image>, format: image-format) -> result<list<u8>, string>;
+
+    /// Decode a Base64 string containing encoded image file bytes into an image.
+    /// The decoded bytes must be a supported image format such as PNG or QOI.
+    decode-base64: func(encoded: string) -> result<image, string>;
+
+    /// Encode an image to the requested image format, then return those encoded
+    /// image file bytes as a standard padded Base64 string.
+    encode-base64: func(src: borrow<image>, format: image-format) -> result<string, string>;
+
+    save: func(src: borrow<image>, path: string, format: image-format) -> result<u64, string>;
+}
+
+world image-plugin {
+    import wasi:filesystem/types@0.2.0;
+    import wasi:filesystem/preopens@0.2.0;
+
+    export image;
+}

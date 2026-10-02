@@ -1,0 +1,13 @@
+{
+  "name": "plugin.image",
+  "slug": "image",
+  "source": "image",
+  "world": "gams:image/image-plugin@1.0.0",
+  "binding": "image_plugin",
+  "members": [
+    "image"
+  ],
+  "artifacts": [
+    "plugin.image.wasm"
+  ]
+}

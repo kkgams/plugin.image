@@ -1,0 +1,12 @@
+{
+  "plugins/image.comp/component.c": "ef693a4568003667f1b810a9443ae757b4fc8a17afcf119cf5caf7c0314faf73",
+  "plugins/image.comp/plugin.mk": "171bd84e1b565c641829b83b25870682870d1818b1a2e64391d666968c1c8579",
+  "plugins/image.comp/qoi.h": "7de6fca1a285b1c20d38f2723dec8b774eb9f144edb9710800a95feeea09375a",
+  "plugins/image.comp/stb_image.h": "594c2fe35d49488b4382dbfaec8f98366defca819d916ac95becf3e75f4200b3",
+  "plugins/image.comp/stb_image_resize2.h": "dfedfff91c3de652969fc0a5919ada367c2f3709f435c6c0275044b2c39d9f2e",
+  "plugins/image.comp/stb_image_write.h": "cbd5f0ad7a9cf4468affb36354a1d2338034f2c12473cf1a8e32053cb6914a05",
+  "plugins/image.comp/wit/deps/wasi-clocks-0.2.0/package.wit": "d4d98af006f1cce3bc8b447975be2c87064b80ba3d87db68a2f46a24e01d7400",
+  "plugins/image.comp/wit/deps/wasi-filesystem-0.2.0/package.wit": "fdba56d19f54ceaaf67ea20ad2a6c875539f78066174d01e643153fe16c74d6d",
+  "plugins/image.comp/wit/deps/wasi-io-0.2.0/package.wit": "0570025e5d4649cc6f4726554c585857cf48fc6df4bf28a7605f4e6f7c82f77a",
+  "plugins/image.comp/wit/package.wit": "9e5dd39396b8e1dde36e2f9b47b63a6601676aaf1e6c6ffcca724f2dad353178"
+}

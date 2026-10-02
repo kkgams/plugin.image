@@ -1,0 +1,13 @@
+plugin.image
+GAMS-authored contributions: Apache-2.0; root LICENSE. This does not relicense third-party code or assets.
+
+stb_image.h: complete local MIT/Unlicense alternatives retained; MIT attribution is Sean Barrett (2017). Historical import revision not inferred from version banner.
+stb_image_resize2.h: complete local MIT/Unlicense alternatives retained; MIT attribution is Sean Barrett (2017). Historical import revision not inferred from version banner.
+stb_image_write.h: complete local MIT/Unlicense alternatives retained; MIT attribution is Sean Barrett (2017). Historical import revision not inferred from version banner.
+QOI C: Dominic Szablewski (2021), MIT. Copied Go QOI names Xavier-Frédéric Moulet; full independent upstream MIT text retained even when the helper is source-distributed but not linked. No assertion of an original port revision.
+Generated C component ABI glue uses flake-pinned wit-bindgen v0.57.1 (2e00369a643c0c8048b8636401e36b0cbf2dfb05); complete upstream MIT/Apache choices retained, not assumed owner-authored glue. Generated Go ABI bindings use the separately inventoried wit-bindgen-go module tool.
+C build uses wasm32-wasip2-clang (WASI SDK 33), wasi-libc 161b3195fc2558d2b1ba3eb9ffae3b2b47407623 and LLVM/compiler-rt 4434dabb69916856b824f68a64b029c67175e532, matching local SDK VERSION/clang evidence. Direct Preview2 C linkage does NOT imply an injected Preview1 adapter. Go uses TinyGo wasip2 runtime and its component assembly; any standard Preview1→Preview2 adapter must be identified by actual build/module evidence. Wasmtime adapter terms retained conditionally, not claimed as a C link input. Runtime reachability/adapter exact source and digest still require actual hosted evidence. The retained wasi-io 3983fe1… Apache-LLVM text is a newer comparison only, NOT the license of the vendored v0.2.0 specification bytes.
+
+Full terms: LICENSES/. Review: THIRD-PARTY-REVIEW.md. This notice is source-bound, not a certification of unverified upstream provenance or current linked contents.
+
+NOTICE-EVIDENCE.json SHA-256: 6a83e7b43444ef7fe3091793ce2cd3d593df19d277d53dc2d7e747db5bf07149
