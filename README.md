@@ -1,6 +1,6 @@
 # plugin.image
 
-A [GAMS](https://github.com/kkgams/gams) WASM plugin for reading immutable image processing.
+A [GAMS](https://github.com/kkgams/gams) WASM plugin for immutable image processing.
 
 | Unit | Source / artifact | Screenshot | License | Original work |
 | --- | --- | --- | --- | --- |
