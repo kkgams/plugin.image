@@ -1,41 +1,34 @@
 ---
 title: plugin.image
-description: Local development and Project launch.
+description: Read immutable image processing.
 status: reference
 ---
 
 # plugin.image
 
-Provides immutable image processing through `gams:image/image@1.0.0`.
-Create or open an image, crop, resize, transform or blit it, read and write pixels,
-and export PNG or QOI bytes, including Base64 conversion. Images are resources;
-transformations return image results. File operations use Host-provided WASI
-preopens. The canonical contract is `plugins/image.comp/wit/package.wit`.
+A [GAMS](https://github.com/kkgams/gams) WASM plugin for reading immutable image processing.
 
-Develop with `nix develop --command make test`; output is
-`dist/plugin.image.wasm`. Integrity and build checks do not exercise the Image
-API in a standalone runtime.
+| Unit | Source / artifact | Original work |
+| --- | --- | --- |
+| Image processor | `plugins/image.comp/component.c` / `plugin.image.wasm` | GAMS; stb by Sean Barrett, QOI by Dominic Szablewski |
 
-## Local Project and documentation
+## API
 
-```sh
-nix develop --command make open
-make serve-docs                 # http://localhost:8080; override DOCS_PORT
-make validate-docs
-make docs                       # portable site under build/site/
-```
+`plugins/image.comp/wit/package.wit` defines `gams:image/image-plugin@1.0.0`: create/open resource images, crop, resize, transform, blit, read/write pixels, export PNG/QOI and convert Base64. Path access uses Host-provided WASI preopens; operations return WIT results for errors.
 
-`make open` builds the component and opens this repository's `gams.json` with
-explicit `GAMS_APP_CWD`. If absent, `tools/gams.app` is downloaded from the latest
-GAMS macOS Apple Silicon release, with its accompanying notices retained.
-An existing download is never updated implicitly; Gatekeeper is not bypassed.
-No neighboring checkout is required. First launch needs network access for the
-Project's pinned published dependencies.
+## Development
 
-The local Project loads the built plugin and the published Files View to browse
-Project files. It is not a plugin-specific editor or an API/runtime test.
-The wiki uses pinned `justgook/wiki` v1.4.0, cached under ignored `build/`.
-GitHub Pages builds with `make docs` on every push to `release`, independently of
-component releases. Set Pages source to **GitHub Actions** in repository settings.
+Use `nix develop` (or direnv) for pinned WASI SDK 33, wit-bindgen, wasm-tools and documentation tools. No sibling checkout is required.
 
-The component API and release safeguards remain documented in the repository README.
+| Command | Purpose |
+| --- | --- |
+| `make build` | Compile and validate the component with embedded notices. |
+| `make package` | Prepare `build.nosync/plugin.image.wasm`, `LICENSES.zip` and `SHA256SUMS` incrementally. |
+| `make check` | Check Python tooling syntax; no API runtime tests are provided. |
+| `make open` | Build and open this local Project in the released macOS Apple Silicon Host. |
+| `make docs` | Build the wiki to `build.nosync/site`. |
+| `make serve-docs` | Preview the wiki; `DOCS_PORT` defaults to 8080. |
+| `make validate-docs` | Validate wiki content. |
+| `make clean` | Remove `build.nosync` and identified Host/Unit downloads; refuse tracked files, symlinks and unidentified supplied tools/caches. |
+
+The local Project browses files with pinned published Units; it is not an image editor or runtime test. Downloads preserve accompanying notices and existing Host tools. Packaging does not verify native Host/API behavior.
