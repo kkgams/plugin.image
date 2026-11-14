@@ -16,6 +16,8 @@ export TMPDIR := $(abspath build.nosync/tmp)
 export PYTHONPYCACHEPREFIX := $(abspath build.nosync/pycache)
 SOURCE := plugins/image.comp
 WIT := $(shell find $(SOURCE)/wit -type f)
+WIT_DIRS := $(shell find $(SOURCE)/wit -type d)
+LEGAL_DIRS := $(shell find LICENSES -type d)
 LEGAL := LICENSE NOTICE LICENSING.md $(sort $(shell find LICENSES -type f \( -iname '*license*' -o -name 'W3C-Community-CLA.html' -o -path 'LICENSES/*' \)))
 ARTIFACT := build.nosync/plugin.image.wasm
 .PHONY: all build package check clean open docs serve-docs validate-docs
@@ -27,11 +29,11 @@ build.nosync/tmp:
 
 BINDINGS := build.nosync/bindings/image_plugin.c build.nosync/bindings/image_plugin.h build.nosync/bindings/image_plugin_component_type.o
 
-$(BINDINGS) &: $(WIT) Makefile flake.nix flake.lock | build.nosync/tmp
+$(BINDINGS) &: $(WIT) $(WIT_DIRS) Makefile flake.nix flake.lock | build.nosync/tmp
 	mkdir -p build.nosync/bindings
 	cd build.nosync/bindings && wit-bindgen c ../../$(SOURCE)/wit -w gams:image/image-plugin@1.0.0
 
-$(ARTIFACT): $(shell find $(SOURCE) -type f) $(BINDINGS) $(LEGAL) scripts/wasm-notices.py Makefile flake.nix flake.lock
+$(ARTIFACT): $(shell find $(SOURCE) -type f -o -type d) $(BINDINGS) $(LEGAL) $(LEGAL_DIRS) scripts/wasm-notices.py Makefile flake.nix flake.lock
 	wasm32-wasip2-clang -o "$@" -mexec-model=reactor -Ibuild.nosync/bindings -O2 -DNDEBUG build.nosync/bindings/image_plugin.c $(SOURCE)/component.c build.nosync/bindings/image_plugin_component_type.o -Wl,--strip-all
 	wasm-tools strip -a "$@" -o "$@.stripped"
 	mv "$@.stripped" "$@"
@@ -43,7 +45,7 @@ check: | build.nosync/tmp
 
 package: build.nosync/SHA256SUMS $(ARTIFACT) build.nosync/LICENSES.zip
 
-build.nosync/LICENSES.zip: $(LEGAL) Makefile | build.nosync/tmp
+build.nosync/LICENSES.zip: $(LEGAL) $(LEGAL_DIRS) Makefile | build.nosync/tmp
 	rm -f "$@"
 	zip -q -X "$@" $(LEGAL)
 
