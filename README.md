@@ -16,6 +16,7 @@ Use `nix develop` (or direnv) for pinned WASI SDK 33, wit-bindgen, wasm-tools an
 
 | Command | Purpose |
 | --- | --- |
+| `make compile_commands.json` | Generate clangd inputs and required bindings only; run inside `nix develop`. `.clangd` uses disposable `build.nosync/`. |
 | `make build` | Compile and validate the component with embedded notices. |
 | `make package` | Prepare `build.nosync/plugin.image.wasm`, `LICENSES.zip` and `SHA256SUMS` incrementally. |
 | `make check` | Check Python tooling syntax; no API runtime tests are provided. |

@@ -1,6 +1,9 @@
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
 .DEFAULT_GOAL := build
+
+component_compile_flags = -I$(1) -O2 -DNDEBUG
+
 .DELETE_ON_ERROR:
 PYTHON ?= python3
 CURL ?= curl
@@ -34,7 +37,7 @@ $(BINDINGS) &: $(WIT) $(WIT_DIRS) Makefile flake.nix flake.lock | build.nosync/t
 	cd build.nosync/bindings && wit-bindgen c ../../$(SOURCE)/wit -w gams:image/image-plugin@1.0.0
 
 $(ARTIFACT): $(shell find $(SOURCE) -type f -o -type d) $(BINDINGS) $(LEGAL) $(LEGAL_DIRS) scripts/wasm-notices.py Makefile flake.nix flake.lock
-	wasm32-wasip2-clang -o "$@" -mexec-model=reactor -Ibuild.nosync/bindings -O2 -DNDEBUG build.nosync/bindings/image_plugin.c $(SOURCE)/component.c build.nosync/bindings/image_plugin_component_type.o -Wl,--strip-all
+	wasm32-wasip2-clang -o "$@" -mexec-model=reactor $(call component_compile_flags,build.nosync/bindings) build.nosync/bindings/image_plugin.c $(SOURCE)/component.c build.nosync/bindings/image_plugin_component_type.o -Wl,--strip-all
 	wasm-tools strip -a "$@" -o "$@.stripped"
 	mv "$@.stripped" "$@"
 	$(PYTHON) scripts/wasm-notices.py embed "$@" --license LICENSE --notice NOTICE
@@ -83,3 +86,10 @@ $(WIKI_MAKEFILE): | build.nosync/tmp
 
 docs serve-docs validate-docs: $(WIKI_MAKEFILE) | build.nosync/tmp
 	$(MAKE) -f "$(WIKI_MAKEFILE)" "$(if $(filter docs,$@),build,$(patsubst %-docs,%,$@))" WIKI_REPOSITORY="$(WIKI_REPOSITORY)" WIKI_VERSION="$(WIKI_VERSION)" WIKI_ENGINE="$(WIKI_ENGINE)" WIKI_SOURCE="$(abspath docs)" WIKI_OUTPUT="$(abspath build.nosync/site)" PORT="$(DOCS_PORT)"
+
+.PHONY: compile_commands.json
+compile_commands.json: build.nosync/compile_commands.json
+
+build.nosync/compile_commands.json: Makefile flake.nix flake.lock scripts/compile-commands.py plugins/image.comp/component.c build.nosync/bindings/image_plugin.c build.nosync/bindings/image_plugin.h $(wildcard plugins/image.comp/*.h) | build.nosync/tmp
+	@$(PYTHON) scripts/compile-commands.py "wasm32-wasip2-clang" $(call component_compile_flags,build.nosync/bindings) -- build.nosync/bindings/image_plugin.c plugins/image.comp/component.c > "$@.tmp"
+	@mv "$@.tmp" "$@"
