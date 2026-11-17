@@ -23,7 +23,7 @@ Use `nix develop` (or direnv) for pinned WASI SDK 33, wit-bindgen, wasm-tools an
 | `make docs` | Build the wiki to `build.nosync/site`. |
 | `make serve-docs` | Preview the wiki; `DOCS_PORT` defaults to 8080. |
 | `make validate-docs` | Validate wiki content. |
-| `make clean` | Remove `build.nosync` and identified Host/Unit downloads; refuse tracked files, symlinks and unidentified supplied tools/caches. |
+| `make clean` | Remove all of `build.nosync/`, `tools/` and `gams_modules/`, including unmarked contents; refuse tracked files and symlinks before deleting anything. |
 
 The local Project browses files with pinned published Units; it is not an image editor or runtime test. Downloads preserve accompanying notices and existing Host tools. Packaging does not verify native Host/API behavior.
 
